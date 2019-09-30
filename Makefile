@@ -1,7 +1,5 @@
 # constants
 CC = g++
-# CFLAGS = -I. -Wall -lncurses
-# edit to remove unnecessary linking of the ncurses library
 CFLAGS = -I. -Wall
 OUT = yell
 
