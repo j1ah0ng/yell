@@ -28,28 +28,7 @@ std::string exec(const char* cmd) {
     return output;
 }
 
-int main(int argc, char *argv[]) {
-
-    // no argument exit case
-    if (argc == 1) exit(0);
-    
-    // create the full command
-    int chars = 0;
-    for (int i = 1; i < argc; ++i) {
-        std::string temp = argv[i];
-        chars += temp.length();
-        if (i + 1 != argc) ++chars;
-    }
-    char *fullCmd = (char *)calloc(sizeof(char), cmdlen + 1 + chars);
-    strcpy(fullCmd, cmd);
-    strcat(fullCmd, (" "));
-    for (int i = 1; i < argc; ++i) {
-        strcat(fullCmd, argv[i]);
-        if (i + 1 != argc) strcat(fullCmd, " ");
-    }
-
-    // run the command, piping to a string
-    std::string output = exec(fullCmd);
+int print(std::string& output) {
 
     // figure out the width of the output
     int width = 0;
@@ -89,6 +68,49 @@ int main(int argc, char *argv[]) {
         if (c == '\n') for (int i = 0; i < padLeft; ++i) std::cout << " ";
     }
     for (int i = 0; i < padTop + 2; ++i) std::cout << "\n";
+
+    return 0;
+}
+
+int main(int argc, char *argv[]) {
+
+    // no argument use cin
+    if (argc == 1) {
+        while (true) {
+            std::string text;
+            std::getline(std::cin, text);
+
+            char *fullCmd = (char *)calloc(sizeof(char), cmdlen + 1 + text.length());
+            const char *text_cstr = text.c_str();
+
+            strcat(fullCmd, cmd);
+            strcat(fullCmd, " ");
+            strcat(fullCmd, text_cstr);
+
+            std::string output = exec(fullCmd);
+            print(output);
+        }
+    }
+    
+    // create the full command
+    int chars = 0;
+    for (int i = 1; i < argc; ++i) {
+        std::string temp = argv[i];
+        chars += temp.length();
+        if (i + 1 != argc) ++chars;
+    }
+    char *fullCmd = (char *)calloc(sizeof(char), cmdlen + 1 + chars);
+    strcpy(fullCmd, cmd);
+    strcat(fullCmd, (" "));
+    for (int i = 1; i < argc; ++i) {
+        strcat(fullCmd, argv[i]);
+        if (i + 1 != argc) strcat(fullCmd, " ");
+    }
+
+    // run the command, piping to a string
+    std::string output = exec(fullCmd);
+
+    print(output);
 
     // we dont like memory leaks
     free(fullCmd);
