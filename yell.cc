@@ -11,12 +11,12 @@
 #include <stdexcept>
 
 const char cmd[] = "figlet -f big";
-constexpr int cmdlen = strlen(cmd);
+int cmdlen = strlen(cmd);
 
-std::string exec(const char *cmd) {
+std::string exec(const char *command) {
   std::array<char, 128> buffer;
   std::string output;
-  std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+  std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command, "r"), pclose);
 
   if (!pipe)
     throw std::runtime_error("popen() failed to create pipe");
